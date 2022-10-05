@@ -1,8 +1,10 @@
 const fs = require('fs').promises;
 
+const TALKER_PATH = 'src/talker.json';
+
 const getAll = async () => {
   try {
-    const talkerFile = await fs.readFile('src/talker.json', 'utf-8');
+    const talkerFile = await fs.readFile(TALKER_PATH, 'utf-8');
     const talkers = JSON.parse(talkerFile);
 
     return [...talkers];
@@ -13,7 +15,7 @@ const getAll = async () => {
 
 const getById = async (id) => {
   try {
-    const talkerFile = await fs.readFile('src/talker.json', 'utf-8');
+    const talkerFile = await fs.readFile(TALKER_PATH, 'utf-8');
     const talkers = JSON.parse(talkerFile);
 
     const talkerSpecified = talkers.filter((talker) => talker.id === id)[0];
@@ -30,12 +32,30 @@ const getById = async (id) => {
 
 const create = async (talker) => {
   try {
-    const talkerFile = await fs.readFile('src/talker.json', 'utf-8');
+    const talkerFile = await fs.readFile(TALKER_PATH, 'utf-8');
     const talkers = JSON.parse(talkerFile);
     const talkerWithId = { ...talker, id: talkers.length + 1 };
     talkers.push(talkerWithId);
-    await fs.writeFile('src/talker.json', JSON.stringify(talkers, null, 2), 'utf-8');
+    await fs.writeFile(TALKER_PATH, JSON.stringify(talkers, null, 2), 'utf-8');
     return talkerWithId;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const updateById = async (id, talkerData) => {
+  try {
+    const talkerFile = await fs.readFile(TALKER_PATH, 'utf-8');
+    const talkers = JSON.parse(talkerFile);
+    const talkerNewData = { id, ...talkerData };
+    const talkersUpdated = talkers.map((talker) => {
+      if (talker.id === id) {
+        return talkerNewData;
+      }
+      return talker;
+    });
+    await fs.writeFile(TALKER_PATH, JSON.stringify(talkersUpdated, null, 2), 'utf-8');
+    return talkerNewData;
   } catch (error) {
     console.error(error);
   }
@@ -45,4 +65,5 @@ module.exports = {
   getAll,
   getById,
   create,
+  updateById,
 };

@@ -36,7 +36,10 @@ const validateWatchedAt = (watchedAt) => {
 
 const validateRate = (rate) => {
   const rateRegex = /^[1-5]$/;
-  if (!rate) {
+  console.log(rate);
+  console.log(!rate);
+
+  if (!Number.isInteger(rate)) {
     return { message: 'O campo "rate" é obrigatório' };
   }
   if (!rateRegex.test(rate)) {
@@ -60,7 +63,7 @@ const validateTalk = (talk) => {
 
 const validateTalker = (req, res, next) => {
   const { name, age, talk } = req.body;
-  console.log(name, age, talk);
+
   const nameMessage = validateName(name);
   const ageMessage = validateAge(age);
   const talkMessage = validateTalk(talk);

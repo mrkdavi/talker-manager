@@ -1,7 +1,7 @@
 const express = require('express');
 const validateTalker = require('../middlewares/validateTalker');
 const verifyToken = require('../middlewares/verifyToken');
-const { getAll, getById, create } = require('../services/talkerService');
+const { getAll, getById, create, updateById } = require('../services/talkerService');
 
 const router = express.Router();
 
@@ -20,6 +20,21 @@ router.post('/', verifyToken, validateTalker, async (req, res) => {
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   const talker = await getById(+id);
+
+  if (!talker) {
+    return res.status(404).json(
+      {
+        message: 'Pessoa palestrante não encontrada',
+      },
+    );
+  }
+
+  res.status(200).json(talker);
+});
+
+router.put('/:id', verifyToken, validateTalker, async (req, res) => {
+  const { id } = req.params;
+  const talker = await updateById(+id, req.body);
 
   if (!talker) {
     return res.status(404).json(
