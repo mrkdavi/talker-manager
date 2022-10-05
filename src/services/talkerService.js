@@ -61,9 +61,21 @@ const updateById = async (id, talkerData) => {
   }
 };
 
+const deleteById = async (id) => {
+  try {
+    const talkerFile = await fs.readFile(TALKER_PATH, 'utf-8');
+    const talkers = JSON.parse(talkerFile);
+    const talkersFiltered = talkers.filter((talker) => talker.id !== id);
+    await fs.writeFile(TALKER_PATH, JSON.stringify(talkersFiltered, null, 2), 'utf-8');
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 module.exports = {
   getAll,
   getById,
   create,
   updateById,
+  deleteById,
 };

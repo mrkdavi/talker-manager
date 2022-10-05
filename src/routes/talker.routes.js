@@ -1,7 +1,7 @@
 const express = require('express');
 const validateTalker = require('../middlewares/validateTalker');
 const verifyToken = require('../middlewares/verifyToken');
-const { getAll, getById, create, updateById } = require('../services/talkerService');
+const { getAll, getById, create, updateById, deleteById } = require('../services/talkerService');
 
 const router = express.Router();
 
@@ -45,6 +45,13 @@ router.put('/:id', verifyToken, validateTalker, async (req, res) => {
   }
 
   res.status(200).json(talker);
+});
+
+router.delete('/:id', verifyToken, async (req, res) => {
+  const { id } = req.params;
+  await deleteById(+id);
+
+  res.status(204).end();
 });
 
 module.exports = router;
