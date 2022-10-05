@@ -17,7 +17,7 @@ const getById = async (id) => {
     const talkers = JSON.parse(talkerFile);
 
     const talkerSpecified = talkers.filter((talker) => talker.id === id)[0];
-    console.log('2', talkerSpecified);
+
     if (!talkerSpecified) {
       return;
     }
@@ -28,7 +28,21 @@ const getById = async (id) => {
   }
 };
 
+const create = async (talker) => {
+  try {
+    const talkerFile = await fs.readFile('src/talker.json', 'utf-8');
+    const talkers = JSON.parse(talkerFile);
+    const talkerWithId = { ...talker, id: talkers.length + 1 };
+    talkers.push(talkerWithId);
+    await fs.writeFile('src/talker.json', JSON.stringify(talkers, null, 2), 'utf-8');
+    return talkerWithId;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 module.exports = {
   getAll,
   getById,
+  create,
 };
